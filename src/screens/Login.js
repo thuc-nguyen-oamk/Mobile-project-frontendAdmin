@@ -11,7 +11,7 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
-export default function Login() {
+export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [visible, setVisibility] = React.useState(false);
@@ -29,21 +29,25 @@ export default function Login() {
     }
     else{
         setError("")
-       api.Login(email,password)
-        .then(function (response) {
-          // handle success
-          alert(JSON.stringify(response.data));
-        })
-        .catch(function (error) {
-            
-          // handle error
-          alert(error.message);
-        })
+       api.Login(email,password).then((response) => 
+       { 
+         if(response == "Authorized")
+        {
+         navigation.navigate('AdminHome')
+        }
+        else{
+          setError("Usename or password is wrong !!!");
+        }
+        console.log(response)
+      }
+      )
         // .finally(function () {
         //   // always executed
         //   alert('Finally called');
         // });
     }
+    
+  
 
 }
 
