@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,12 +11,15 @@ import {
 import List from '../../components/list';
 import Pannel from '../../components/panel';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
-
-
+import apis from '../../api/apis';
+var numeral = require('numeral');
 export default function AdminPage({navigation}) {
+  const [adminInfo, setAdminInfo] = useState({});
+  const [pannelInfor, setPannelInfor] = useState({});
+  const [token, setToken] = useState('');
   const Logout = async () => {
     await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('adminInfo');
     console.log('Log out');
     navigation.navigate('Login');
   };
@@ -35,13 +38,30 @@ export default function AdminPage({navigation}) {
   const orderTable = {
     head: ['ID', 'ID Customer', 'Address', 'Amount', 'Created at'],
     data: [
-      ['1', '23sadsadsa2', '3', '4', '10'],
+      ['1', '23sadsa2', '3', '4', '10'],
       ['1', '2', '3', '4', '10'],
       ['1', '2', '3', '4', '10'],
       ['1', '2', '3', '4', '10'],
     ],
-    width: [40, 100, 150, 100, 100],
+    width: [50, 100, 150, 100, 100],
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      const temp = await AsyncStorage.getItem('adminInfo');
+      const token_temp = await AsyncStorage.getItem('token');
+
+   await apis.BasicInformation(token_temp).then(response => {
+        setPannelInfor(response);
+        console.log(response);
+      });
+      setToken(token_temp);
+      setAdminInfo(JSON.parse(temp));
+    }
+
+    fetchData();
+  }, []);
+
   //console.log(productTable.head)
   return (
     <SafeAreaView>
@@ -50,9 +70,12 @@ export default function AdminPage({navigation}) {
           <Icon name="user" size={150} color="black" />
 
           <View style={styles.rightHeader}>
-            <Text style={styles.title}>Welcome Admin</Text>
+            <Text style={styles.title}>Welcome {adminInfo['admin_name']}</Text>
             <View style={styles.buttongroup}>
-              <Button title="Change password" onPress={() =>  navigation.navigate('Profile')} />
+              <Button
+                title="Change password"
+                onPress={() => navigation.navigate('Profile')}
+              />
               <Button
                 title="Log out"
                 onPress={() => {
@@ -64,22 +87,24 @@ export default function AdminPage({navigation}) {
         </View>
         <View style={styles.content}>
           <View style={styles.pannel}>
-            <Pannel title="Pannel Name" number="1234556"></Pannel>
-            <Pannel title="Pannel Name" number="1234556"></Pannel>
-            <Pannel title="Pannel Name" number="1234556"></Pannel>
+            <Pannel
+              title="Profit"
+              number={numeral(pannelInfor['money']).format('0,0')}></Pannel>
+            <Pannel title="Orders" number={pannelInfor['listOrder']}></Pannel>
+            <Pannel
+              title="Customers"
+              number={pannelInfor['listCustomer']}></Pannel>
             <Pannel title="Pannel Name" number="1234556"></Pannel>
           </View>
           <View>
             <List
-              title="List to show the most poluar products"
+              title="List to show the most popular products"
               data={productTable}></List>
             <List title="List of the recent orders" data={orderTable}></List>
           </View>
         </View>
       </ScrollView>
-      
     </SafeAreaView>
-    
   );
 }
 

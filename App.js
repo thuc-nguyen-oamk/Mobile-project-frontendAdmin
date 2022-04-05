@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Button} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {decode, encode} from 'base-64';
@@ -22,7 +22,7 @@ import Message from './src/screens/admin/Message';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function MyTabs() {
+function MyTabs({navigation}) {
   return (
     <Tab.Navigator
       initialRouteName="Dashboard"
@@ -52,7 +52,24 @@ function MyTabs() {
       <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Order" component={Order} />
       <Tab.Screen name="Message" component={Message} />
-     
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Profile',
+          headerTitleAlign: 'center',
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Dashboard')}
+            />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -62,7 +79,7 @@ export default function App() {
       <Stack.Navigator
         initialRouteName="Login"
         screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Profile" component={Profile} />
+        {/* <Stack.Screen name="Profile" component={Profile}  options={{headerShown:true, title:"Profile", headerTitleAlign:"center" }} /> */}
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="AdminHome" component={MyTabs} />
       </Stack.Navigator>

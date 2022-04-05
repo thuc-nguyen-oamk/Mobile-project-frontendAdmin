@@ -4,7 +4,7 @@ export default function Pannel(props) {
   return (
    <View style={styles.container}>
        <Text style={styles.title}>{props.title}</Text>
-       <Text>{props.number}</Text>
+       <Text style={{fontSize:20}}>{props.number}</Text>
     </View>
 
   )

@@ -13,7 +13,7 @@ export default function List(props) {
         setTableData(productTable['data'])
         setTableHead(productTable['head'])
         setArrWidth(productTable['width'])
-        console.log("run")
+      
     }, 1000);
   },[props]);
 
@@ -46,7 +46,7 @@ export default function List(props) {
 }
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff'},
-    head: { height: 60, backgroundColor: '#f1f8ff'   },
+    head: { height: 100, backgroundColor: '#f1f8ff'   },
     text: { textAlign: 'center',fontWeight:"bold",padding:15},
 
 

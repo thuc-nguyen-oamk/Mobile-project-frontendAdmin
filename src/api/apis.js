@@ -1,11 +1,23 @@
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// const instance = axios.create({
+//     baseURL: 'https://api.uniproject.xyz/eshopmb/',
+//     headers: {
+//         'content-type':'application/json',
+//     },
+// });
+
+
 const instance = axios.create({
-    baseURL: 'https://api.uniproject.xyz/eshopmb/',
+    baseURL: 'http://87.100.200.90:3000/',
     headers: {
         'content-type':'application/json',
     },
+});
+const authorized = axios.create({
+    baseURL: 'http://87.100.200.90:3000/',
+   
 });
 export default {
     Login: (email,password) =>
@@ -18,8 +30,12 @@ export default {
         }
     }) .then(function (response) {
         // handle success
+     
+        AsyncStorage.setItem('token',JSON.stringify(response.data['token']));
+        AsyncStorage.setItem('adminInfo',JSON.stringify(response.data['payload']));
        
-        AsyncStorage.setItem('token',JSON.stringify(response.data['token']));  
+       
+     
         return "Authorized";
         
       })
@@ -28,5 +44,25 @@ export default {
         // handle error
         return error.message
        // alert(error.message);
-      })
+      }),
+      BasicInformation: (TOKEN) =>
+      authorized({
+          'method': 'GET',
+          'url':'/order/statics',
+          headers: {
+            'content-type':'application/json',
+            'Authorization': `Bearer ${TOKEN}`
+          },
+      }) .then(function (response) {
+          // handle success
+
+
+          return response.data;
+          
+        })
+        .catch(function (error) {
+              // handle error
+          return error.message
+         // alert(error.message);
+        })
 }
