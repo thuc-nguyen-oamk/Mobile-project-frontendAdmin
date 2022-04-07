@@ -38,7 +38,7 @@ export default function Login({ navigation }) {
         else{
           setError("Usename or password is wrong !!!");
         }
-        console.log(response)
+        console.log('response xxx', response)
       }
       )
         // .finally(function () {

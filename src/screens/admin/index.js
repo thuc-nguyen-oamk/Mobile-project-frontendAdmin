@@ -49,9 +49,10 @@ export default function AdminPage({navigation}) {
   useEffect(() => {
     async function fetchData() {
       const temp = await AsyncStorage.getItem('adminInfo');
-      const token_temp = await AsyncStorage.getItem('token');
+      let token_temp = await AsyncStorage.getItem('token');
+      token_temp = token_temp.replace(/"/g, '');
 
-   await apis.BasicInformation(token_temp).then(response => {
+      await apis.BasicInformation(token_temp).then(response => {
         setPannelInfor(response);
         console.log(response);
       });
