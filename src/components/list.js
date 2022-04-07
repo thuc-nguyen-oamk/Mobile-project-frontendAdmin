@@ -1,53 +1,100 @@
-import React,{useEffect,useState}from 'react'
-import {StyleSheet,View,Text,ScrollView } from "react-native"
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Button,
+} from 'react-native';
+import {
+  Table,
+  TableWrapper,
+  Row,
+  Rows,
+  Col,
+  Cols,
+  Cell,
+} from 'react-native-table-component';
+import DropDownPicker from 'react-native-dropdown-picker';
 export default function List(props) {
-    const productTable= props.data
-    const [tableHead,setTableHead]=useState([])
-    const [tableData,setTableData]=useState([])
-    const [arrWidth,setArrWidth]=useState([])
+  const productTable = props.data;
+  const [tableHead, setTableHead] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [arrWidth, setArrWidth] = useState([]);
 
+  //for update order status
+ 
 
   useEffect(() => {
-    setTimeout(() => {
-        setTableData(productTable['data'])
-        setTableHead(productTable['head'])
-        setArrWidth(productTable['width'])
-      
-    }, 1000);
-  },[props]);
+    let isMounted = true;
 
+    setTableData(productTable['data']);
+    setTableHead(productTable['head']);
+    setArrWidth(productTable['width']);
+    return () => {
+      isMounted = false;
+    };
+  }, [props]);
 
-
-
-//   _alertIndex =(index) => {
-//     Alert.alert(`This is row ${index + 1}`);
-//   }
-  const element = (data, index) => (
-    <TouchableOpacity >
-      <View style={styles.btn}>
-        <Text style={styles.btnText}>button</Text>
-      </View>
-    </TouchableOpacity>
-  );
 
   return (
-      <View style={{marginBottom:20}} >
-    <Text>{props.title}</Text>
-    <ScrollView horizontal={true}>
-    <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}} >
-    <Row data={tableHead} style={styles.head} widthArr={arrWidth} textStyle={styles.text}/>
-         <Rows data={tableData} textStyle={styles.text} widthArr={arrWidth}/>
-         
-        </Table>
-        </ScrollView>
+    <View style={styles.container}>
+      <ScrollView horizontal={true}>
+        <View>
+          <Table borderStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}>
+            <Row
+              data={tableHead}
+              widthArr={arrWidth}
+              style={styles.header}
+              textStyle={styles.text}
+            />
+          </Table>
+          <ScrollView style={styles.dataWrapper}>
+            <Table borderStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}>
+              {tableData.map((rowData, index) => (
+                // <Row
+                //   key={index}
+                //   data={rowData}
+                //   widthArr={arrWidth}
+                //   style={[styles.row, index%2 && {backgroundColor: '#F7F6E7'}]}
+                //   textStyle={styles.text}
+
+                // />
+                <TableWrapper
+                  key={index}
+                  style={[
+                    styles.row,
+                    index % 2 && {backgroundColor: '#F7F6E7'},
+                  ]}>
+                  {rowData.map((cellData, cellIndex) => (
+                    <Cell
+                      key={cellIndex}
+                      data={
+                        cellData === 'Order'
+                          ? props.element(rowData, index)
+                          :  (cellData ==="Product" ?  props.element(rowData, index): cellData )
+                      }
+                      width={arrWidth[cellIndex]}
+                      textStyle={styles.text}
+                    />
+                  ))}
+                </TableWrapper>
+              ))}
+            </Table>
+          </ScrollView>
         </View>
-  )
+      </ScrollView>
+    </View>
+  );
 }
+
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff'},
-    head: { height: 100, backgroundColor: '#f1f8ff'   },
-    text: { textAlign: 'center',fontWeight:"bold",padding:15},
-
-
-  });
+  container: {flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff'},
+  head: {height: 40, backgroundColor: '#808B97'},
+  text: {margin: 6, textAlign: 'center'},
+  row: {flexDirection: 'row', backgroundColor: '#FFF1C1'},
+  //btn: { width: 100, height: 30, backgroundColor: '#78B7BB',  borderRadius: 2 },
+  btnText: {textAlign: 'center', color: '#fff'},
+});

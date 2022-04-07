@@ -19,6 +19,7 @@ import Product from './src/screens/admin/Product';
 import Notification from './src/screens/admin/Notification';
 import Order from './src/screens/admin/Order';
 import Message from './src/screens/admin/Message';
+import ProductDetail from './src/screens/admin/ProductDetail';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -49,6 +50,7 @@ function MyTabs({navigation}) {
       })}>
       <Tab.Screen name="Dashboard" component={AdminPage} />
       <Tab.Screen name="Product" component={Product} />
+    
       <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Order" component={Order} />
       <Tab.Screen name="Message" component={Message} />
@@ -66,6 +68,24 @@ function MyTabs({navigation}) {
               name="arrow-back-outline"
               size={24}
               onPress={() => navigation.navigate('Dashboard')}
+            />
+          ),
+        }}
+      />
+        <Tab.Screen
+        name="ProductDetail"
+        component={ProductDetail}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Product Detail',
+          headerTitleAlign: 'center',
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Product')}
             />
           ),
         }}
