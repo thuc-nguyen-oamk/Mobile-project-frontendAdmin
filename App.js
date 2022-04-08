@@ -20,6 +20,8 @@ import Notification from './src/screens/admin/Notification';
 import Order from './src/screens/admin/Order';
 import Message from './src/screens/admin/Message';
 import ProductDetail from './src/screens/admin/ProductDetail';
+import OrderDetail from './src/screens/admin/OrderDetail';
+import EditProduct from './src/screens/product/EditProduct';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -80,6 +82,42 @@ function MyTabs({navigation}) {
           tabBarButton: props => null,
           headerShown: true,
           title: 'Product Detail',
+          headerTitleAlign: 'center',
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Product')}
+            />
+          ),
+        }}
+      />
+        <Tab.Screen
+        name="OrderDetail"
+        component={OrderDetail}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Order Detail',
+          headerTitleAlign: 'center',
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Order')}
+            />
+          ),
+        }}
+      />
+         <Tab.Screen
+        name="EditProduct"
+        component={EditProduct}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Edit Product',
           headerTitleAlign: 'center',
           headerLeft: () => (
             <Icon

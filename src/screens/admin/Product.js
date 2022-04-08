@@ -23,15 +23,19 @@ export default function Product({ navigation }) {
     token_temp = token_temp.replace(/"/g, '');
     apis.ProductList(token_temp).then(response => {
       const list_temp = response;
+      
       const array_temp = [];
       for (var i = 0; i < list_temp.length; i++) {
+        const gallery =list_temp[i]['display_image'].split(",")
+        
+      
         array_temp.push(
           Array(
             list_temp[i]['product_id'],
             <Image
               style={{height: 200}}
               source={{
-                uri: `https://api.uniproject.xyz/eshopmb/images/${list_temp[i]['display_image']}`,
+                uri: `https://api.uniproject.xyz/eshopmb/images/${gallery[0]}`,
               }}
             />,
             list_temp[i]['product_name'],
@@ -51,11 +55,13 @@ export default function Product({ navigation }) {
     });
   }
   useEffect(() => {
-    let isMounted = true;
-
-    fetchData();
+    const intervalCall = setInterval(() => {
+      fetchData();
+     
+    }, 1000000);
     return () => {
-      isMounted = false;
+      // clean up
+      clearInterval(intervalCall);
     };
   }, []);
 
@@ -76,9 +82,6 @@ export default function Product({ navigation }) {
     data: productList,
     width: [50, 200, 150, 100, 150, 150, 150, 150, 150,150],
   };
-  function updateStatus(data,status,index) {
-    
-  }
   // Create button for order
   const element = (data, index) => (
       <View

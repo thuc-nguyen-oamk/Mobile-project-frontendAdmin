@@ -4,7 +4,7 @@ import {StyleSheet, View, Text, Image, SafeAreaView,Button,
     ScrollView,} from 'react-native';
 import apis from '../../api/apis';
 import List from '../../components/list';
-export default function ProductDetail({route}) {
+export default function ProductDetail({route,navigation}) {
   const [productList, setProductList] = useState([]);
   const [producDetailtList, setProductDetailList] = useState([]);
   const productTable = {
@@ -17,7 +17,6 @@ export default function ProductDetail({route}) {
       'Description',
       'Rating',
       'Stock',
-
       'Action',
     ],
     data: productList,
@@ -31,7 +30,6 @@ export default function ProductDetail({route}) {
       'Price',
       'Promotion',
       'Stock',
-
       'Action',
     ],
     data: producDetailtList,
@@ -49,13 +47,17 @@ export default function ProductDetail({route}) {
     
 
       for (var i = 0; i < list_detail.length; i++) {
+        const gallery =list_detail[i]['product_images'].split(",")
+        
+
+     
         detail_product_array_temp.push(
           Array(
             list_detail[i]['product_detail_id'],
             <Image
               style={{height: 200}}
               source={{
-                uri: `https://api.uniproject.xyz/eshopmb/images/${list_detail[i]['product_images']}`,
+                uri: `https://api.uniproject.xyz/eshopmb/images/${gallery[0]}`,
               }}
             />,
             list_detail[i]['product_color'],
@@ -93,7 +95,8 @@ export default function ProductDetail({route}) {
 
     fetchData();
     return () => {
-      isMounted = false;
+    setProductList([]);
+     setProductDetailList([]);
     };
   }, [route.params?.product_id]);
   const element = (data, index) => (
@@ -105,7 +108,9 @@ export default function ProductDetail({route}) {
         justifyContent: 'space-between',
         padding: 10,
       }}>
-      <Button title="Detail" size={24} onPress={() => console.log(data[0])} />
+      <Button title="Edit" size={24} onPress={() => navigation.navigate('EditProduct')} />
+   
+      <Button title="Add more product child" size={24} onPress={() => console.log("ok")} />
     </View>
   );
 

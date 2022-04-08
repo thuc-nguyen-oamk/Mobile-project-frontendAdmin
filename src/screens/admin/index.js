@@ -42,9 +42,12 @@ export default function AdminPage({navigation}) {
     const temp = await AsyncStorage.getItem('adminInfo');
     var token_temp = await AsyncStorage.getItem('token');
     token_temp = token_temp.replace(/"/g, '');
+   // token_temp= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6NzI1MjY0MywiYWRtaW5fZW1haWwiOiJkZGtob2FAZ21haWwuY29tIiwiYWRtaW5fbmFtZSI6IkRJTkggREFORyBLSE9BIiwiYWRtaW5fYWRkcmVzcyI6IkthbGVydm9udGllIiwiYWRtaW5fcGhvbmUiOiIxMjM0NTY3ODkiLCJpYXQiOjE2NDkzMTY3MzR9.Oqu47WdLEwdbK90i4_RYHd_iP--rDmVVp7NjenwCux4"
      apis.BasicInformation(token_temp).then(response => {
+     
       setPannelInfor(response);
       const list_temp = response['listOrder2']
+    
       const array_temp =[]
       for( var i = 0 ;i < (list_temp.length > 5 ? 5 : list_temp.length) ; i++)
       {
@@ -77,15 +80,19 @@ export default function AdminPage({navigation}) {
     setAdminInfo(JSON.parse(temp));
   }
   useEffect(() => {
-    let isMounted = true;
-   
-    fetchData();
-    return () => { isMounted = false };
+    const intervalCall = setInterval(() => {
+      fetchData();
+     
+    }, 500000);
+    return () => {
+      // clean up
+      clearInterval(intervalCall);
+    };
   }, []);
 
 
 
-  //console.log(productTable.head)
+  
   return (
     <SafeAreaView>
       <ScrollView>

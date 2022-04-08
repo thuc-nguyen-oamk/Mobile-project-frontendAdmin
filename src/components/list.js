@@ -43,6 +43,7 @@ export default function List(props) {
     <View style={styles.container}>
       <ScrollView horizontal={true}>
         <View>
+          <Text>{props.title}</Text>
           <Table borderStyle={{borderWidth: 1, borderColor: '#C1C0B9'}}>
             <Row
               data={tableHead}

@@ -1,12 +1,15 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// const URL = 'https://api.uniproject.xyz/eshopmb/';
+
 // const instance = axios.create({
-//     baseURL: 'https://api.uniproject.xyz/eshopmb/',
-//     headers: {
-//         'content-type':'application/json',
-//     },
+//   baseURL: URL,
+//   headers: {
+//     'content-type': 'application/json',
+//   },
 // });
+
 const URL = 'http://87.100.200.90:3000/';
 
 const instance = axios.create({
@@ -56,10 +59,12 @@ export default {
     })
       .then(function (response) {
         // handle success  getTokenFromStorage()
+
         return response.data;
       })
       .catch(function (error) {
         // handle error
+
         return error.message;
         // alert(error.message);
       }),
@@ -104,25 +109,44 @@ export default {
         return error.message;
         // alert(error.message);
       }),
-      GetProductByID: (TOKEN, payload) =>
-      authorized({
-        method: 'GET',
-        url: `products/${payload}`,
-        headers: {
-          'content-type': 'application/json',
-          Authorization: `Bearer ${TOKEN}`,
-        },
-       
+  GetProductByID: (TOKEN, payload) =>
+    authorized({
+      method: 'GET',
+      url: `products/${payload}`,
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    })
+      .then(function (response) {
+        // handle success
+
+        return response.data;
       })
-        .then(function (response) {
-          // handle success
-  
-          return response.data;
-        })
-        .catch(function (error) {
-          // handle error
-  
-          return error.message;
-          // alert(error.message);
-        }),
+      .catch(function (error) {
+        // handle error
+
+        return error.message;
+        // alert(error.message);
+      }),
+  GetOrderByID: (TOKEN, payload) =>
+    authorized({
+      method: 'GET',
+      url: `order/${payload}`,
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    })
+      .then(function (response) {
+        // handle success
+
+        return response.data;
+      })
+      .catch(function (error) {
+        // handle error
+
+        return error.message;
+        // alert(error.message);
+      }),
 };
