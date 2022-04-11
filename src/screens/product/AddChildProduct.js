@@ -6,7 +6,6 @@
 import React, {useState, useEffect, useCal} from 'react';
 var FormData = require('form-data');
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 // Import required components
 import {
@@ -27,61 +26,37 @@ import {
 import {launchImageLibrary} from 'react-native-image-picker';
 import apis from '../../api/apis';
 
-const EditProduct = ({route}) => {
+const AddChildProduct = ({route}) => {
   const data = JSON.parse(route.params?.data);
+  
   const [images, setImages] = useState({});
   const [token, setToken] = useState('');
-  const [categoryList, setCategoryList] = useState({});
-  data[1] = data[1]['props']['source']['uri'];
-  //For category chosen
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState();
-  const [items, setItems] = useState([]);
+  // data[1] = data[1]['props']['source']['uri'];
   //For product name, brand, price and discount price
-  const [productID, setProductID] = useState('');
-  const [productName, setProductName] = useState('');
-  const [productBrand, setProductBrand] = useState('');
+  const [productID, setProductID] = useState(0);
   const [productPrice, setProductPrice] = useState(0);
   const [productDiscount, setProductDiscount] = useState(0);
-  const [productDescription, setProductDescription] = useState('');
+  const [productStock, setProductStock] = useState(0);
+  const [productColor, setProductColor] = useState("");
   async function fetchData() {
     var token_temp = await AsyncStorage.getItem('token');
     token_temp = token_temp.replace(/"/g, '');
     setToken(token_temp);
-
-    var category_list = await apis.GetCategory(token_temp);
-    var items1 = [];
-
-    for (var i in category_list) {
-      items1.push({
-        label: category_list[i]['category_name'],
-        value: category_list[i]['category_id'],
-      });
-    }
-
-    setItems(items1);
-    setCategoryList(category_list);
   }
-
   useEffect(() => {
     const controller = new AbortController();
     fetchData();
-    return () => controller.abort();
-  }, [route.params?.data]);
-  useEffect(() => {
-    const controller = new AbortController();
-
-    setImages({uri: data[1], name: 'SomeImageName.jpg', type: 'image/jpg'});
-    setProductID(data[0]);
-    setProductName(data[2]);
-    setProductBrand(data[3]);
-    setProductPrice(data[4]);
-    setProductDiscount(data[5]);
-    setProductDescription(data[7]);
-
-    setValue(data[11]);
-    return () => controller.abort();
-  }, [route.params?.data]);
+    setProductID(data);
+    return () => {
+      controller.abort()
+      setProductID(0);
+      setProductPrice(0);
+      setProductDiscount(0);
+      setProductStock(0);
+      setProductColor("");
+      setImages({});
+    };
+  },[route.params?.data]);
 
   const chooseFile = type => {
     let options = {
@@ -125,16 +100,14 @@ const EditProduct = ({route}) => {
     //console.log("Upload image:" ,images)
     console.log('save');
     const formData = new FormData();
-    formData.append('myImage', images);
+    formData.append('product_images', images);
     formData.append('product_id', productID);
-    formData.append('product_name', productName);
-    formData.append('product_description', productDescription);
-    formData.append('category_id', value);
-    formData.append('product_brand', productBrand);
-    formData.append('display_price', productPrice);
-    formData.append('display_price_discounted', productDiscount);
-
-    await apis.UpdateProduct(formData, token);
+    formData.append('product_stock', productStock);
+    formData.append('product_color', productColor);
+    formData.append('product_price', productPrice);
+    formData.append('product_price_discounted', productDiscount);
+    console.log(formData);
+    await apis.AddChildProduct(formData, token);
   };
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -157,45 +130,34 @@ const EditProduct = ({route}) => {
               <Text style={styles.textStyle}>Choose Image</Text>
             </TouchableOpacity>
           </View>
-          <View>
-            <Text>Product </Text>
-            <TextInput
-              style={styles.TextInput}
-              placeholderTextColor="#BDBDBD"
-              // value={data[2]}
-              value={productName}
-              onChangeText={e => setProductName(e)}
-            />
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-              }}>
-              <View width="50%">
-                <Text>Category</Text>
-                <DropDownPicker
-                  open={open}
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  listMode="SCROLLVIEW"
-                />
-              </View>
-              <View width="50%">
-                <Text>Brand</Text>
-                <TextInput
-                  style={styles.TextInput}
-                  width="98%"
-                  placeholderTextColor="#BDBDBD"
-                  value={productBrand}
-                  onChangeText={e => setProductName(e)}
-                />
-              </View>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+            }}>
+            <View width="50%">
+              <Text>Color</Text>
+              <TextInput
+                style={styles.TextInput}
+                width="98%"
+                placeholderTextColor="#BDBDBD"
+                value={productColor}
+                onChangeText={e => setProductColor(e)}
+              />
+            </View>
+            <View width="50%">
+              <Text>Stock</Text>
+              <TextInput
+                style={styles.TextInput}
+                width="98%"
+                placeholderTextColor="#BDBDBD"
+                value={productStock.toString()}
+                onChangeText={e => setProductStock(e)}
+              />
             </View>
           </View>
+
           <View
             style={{
               display: 'flex',
@@ -223,21 +185,7 @@ const EditProduct = ({route}) => {
               />
             </View>
           </View>
-          <View>
-            <Text>Description</Text>
-            <View style={styles.textAreaContainer}>
-              <TextInput
-                style={styles.textArea}
-                underlineColorAndroid="transparent"
-                placeholder="Type something"
-                placeholderTextColor="grey"
-                numberOfLines={10}
-                multiline={true}
-                value={productDescription}
-                onChangeText={e => setProductDescription(e)}
-              />
-            </View>
-          </View>
+
           <View>
             <Button title="Save" size={50} onPress={() => Update()} />
           </View>
@@ -247,7 +195,7 @@ const EditProduct = ({route}) => {
   );
 };
 
-export default EditProduct;
+export default AddChildProduct;
 
 const styles = StyleSheet.create({
   container: {

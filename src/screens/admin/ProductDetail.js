@@ -46,7 +46,7 @@ export default function ProductDetail({route, navigation}) {
       const array_temp = [];
       const detail_product_array_temp = [];
 
-      console.log(list_temp);
+  
 
       for (var i = 0; i < list_detail.length; i++) {
         const gallery = list_detail[i]['product_images'].split(',');
@@ -64,6 +64,7 @@ export default function ProductDetail({route, navigation}) {
             list_detail[i]['product_price'],
             list_detail[i]['product_price_discounted'],
             list_detail[i]['product_stock'],
+            "ProductDetail"
           ),
         );
         setProductDetailList(detail_product_array_temp);
@@ -79,11 +80,9 @@ export default function ProductDetail({route, navigation}) {
           />,
           list_temp[0]['product_name'],
           list_temp[0]['product_brand'],
-
           list_temp[0]['display_price'],
           list_temp[0]['display_price_discounted'],
           list_temp[0]['category_name'],
-
           list_temp[0]['product_description'],
           list_temp[0]['product_rating'],
           list_temp[0]['product_stock_total'],
@@ -105,8 +104,6 @@ export default function ProductDetail({route, navigation}) {
     };
   }, [route.params?.product_id]);
   const element = (data, index) => (
-    // console.log("Product Detail: ", JSON.stringify(data[1]['props']['source']['uri'])),
-
     <View
       style={{
         display: 'flex',
@@ -126,8 +123,29 @@ export default function ProductDetail({route, navigation}) {
       <Button
         title="Add more product child"
         size={24}
-        onPress={() => console.log('ok')}
+        onPress={() =>navigation.navigate('AddChildProduct', {data: JSON.stringify(data[0])})}
       />
+    </View>
+  );
+  const element1 = (data, index) => (
+  
+    <View
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        padding: 10,
+      }}>
+      <Button
+        title="Edit"
+        size={24}
+        onPress={() =>
+          navigation.navigate('EditChildProduct', {data: JSON.stringify(data)})
+        }
+      />
+
+    
     </View>
   );
 
@@ -137,7 +155,7 @@ export default function ProductDetail({route, navigation}) {
         <Text>Product Parent</Text>
         <List title="" data={productTable} element={element}></List>
         <Text>Product Children</Text>
-        <List title="" data={productDetailTable} element={element}></List>
+        <List title="" data={productDetailTable} element={element1}></List>
       </ScrollView>
     </SafeAreaView>
   );

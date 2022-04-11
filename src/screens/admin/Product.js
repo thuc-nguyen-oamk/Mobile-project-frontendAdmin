@@ -102,7 +102,7 @@ export default function Product({ navigation }) {
     <>
       <View style={[styles.head]}>
         <Text style={styles.title}>List of Products</Text>
-        <Icon name="plus" size={30} color="black" />
+        <Icon name="plus" size={30} color="black" onPress={()=>{navigation.navigate("AddProduct")}} />
       </View>
 
       <List title="" data={productTable} element={element}></List>

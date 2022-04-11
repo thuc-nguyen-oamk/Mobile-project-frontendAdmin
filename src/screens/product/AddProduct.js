@@ -27,30 +27,27 @@ import {
 import {launchImageLibrary} from 'react-native-image-picker';
 import apis from '../../api/apis';
 
-const EditProduct = ({route}) => {
-  const data = JSON.parse(route.params?.data);
-  const [images, setImages] = useState({});
+const AddProduct = ({navigation}) => {
+
   const [token, setToken] = useState('');
   const [categoryList, setCategoryList] = useState({});
-  data[1] = data[1]['props']['source']['uri'];
+
   //For category chosen
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState();
   const [items, setItems] = useState([]);
   //For product name, brand, price and discount price
-  const [productID, setProductID] = useState('');
   const [productName, setProductName] = useState('');
   const [productBrand, setProductBrand] = useState('');
-  const [productPrice, setProductPrice] = useState(0);
-  const [productDiscount, setProductDiscount] = useState(0);
   const [productDescription, setProductDescription] = useState('');
+
   async function fetchData() {
     var token_temp = await AsyncStorage.getItem('token');
     token_temp = token_temp.replace(/"/g, '');
     setToken(token_temp);
-
-    var category_list = await apis.GetCategory(token_temp);
     var items1 = [];
+   
+    var category_list = await apis.GetCategory(token_temp);
 
     for (var i in category_list) {
       items1.push({
@@ -58,30 +55,27 @@ const EditProduct = ({route}) => {
         value: category_list[i]['category_id'],
       });
     }
-
     setItems(items1);
     setCategoryList(category_list);
+    console.log("Run")
   }
 
   useEffect(() => {
     const controller = new AbortController();
     fetchData();
-    return () => controller.abort();
-  }, [route.params?.data]);
-  useEffect(() => {
-    const controller = new AbortController();
 
-    setImages({uri: data[1], name: 'SomeImageName.jpg', type: 'image/jpg'});
-    setProductID(data[0]);
-    setProductName(data[2]);
-    setProductBrand(data[3]);
-    setProductPrice(data[4]);
-    setProductDiscount(data[5]);
-    setProductDescription(data[7]);
 
-    setValue(data[11]);
     return () => controller.abort();
-  }, [route.params?.data]);
+  }, []);
+  // useEffect(() => {
+  //   const controller = new AbortController();
+
+   
+
+    
+   
+  //   return () => controller.abort();
+  // }, []);
 
   const chooseFile = type => {
     let options = {
@@ -124,23 +118,27 @@ const EditProduct = ({route}) => {
   const Update = async () => {
     //console.log("Upload image:" ,images)
     console.log('save');
-    const formData = new FormData();
-    formData.append('myImage', images);
-    formData.append('product_id', productID);
-    formData.append('product_name', productName);
-    formData.append('product_description', productDescription);
-    formData.append('category_id', value);
-    formData.append('product_brand', productBrand);
-    formData.append('display_price', productPrice);
-    formData.append('display_price_discounted', productDiscount);
-
-    await apis.UpdateProduct(formData, token);
+    // const formData = new FormData();
+    // formData.append('product_name', productName);
+    // formData.append('category_id', value);
+    // formData.append('product_description', productDescription);
+    
+    // formData.append('product_brand', productBrand);
+    // console.log(formData)
+    const payload ={
+      category_id: value,
+      product_name:productName,
+      product_description: productDescription,
+      product_brand: productBrand
+    }
+    await apis.AddProduct(payload, token);
+    navigation.navigate("Product")
   };
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView nestedScrollEnabled={true}>
         <View style={styles.container}>
-          <View
+          {/* <View
             style={{
               display: 'flex',
               margin: 10,
@@ -148,7 +146,6 @@ const EditProduct = ({route}) => {
               alignItems: 'center',
             }}>
             <Image source={{uri: images.uri}} style={styles.imageStyle} />
-            {/* <Image source={{uri: images}} style={styles.imageStyle} /> */}
 
             <TouchableOpacity
               activeOpacity={0.5}
@@ -156,7 +153,7 @@ const EditProduct = ({route}) => {
               onPress={() => chooseFile('photo')}>
               <Text style={styles.textStyle}>Choose Image</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View>
             <Text>Product </Text>
             <TextInput
@@ -191,12 +188,12 @@ const EditProduct = ({route}) => {
                   width="98%"
                   placeholderTextColor="#BDBDBD"
                   value={productBrand}
-                  onChangeText={e => setProductName(e)}
+                  onChangeText={e => setProductBrand(e)}
                 />
               </View>
             </View>
           </View>
-          <View
+          {/* <View
             style={{
               display: 'flex',
               flexDirection: 'row',
@@ -222,7 +219,7 @@ const EditProduct = ({route}) => {
                 onChangeText={e => setProductDiscount(e)}
               />
             </View>
-          </View>
+          </View> */}
           <View>
             <Text>Description</Text>
             <View style={styles.textAreaContainer}>
@@ -247,7 +244,7 @@ const EditProduct = ({route}) => {
   );
 };
 
-export default EditProduct;
+export default AddProduct;
 
 const styles = StyleSheet.create({
   container: {

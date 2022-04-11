@@ -25,7 +25,6 @@ export default function List(props) {
   const [arrWidth, setArrWidth] = useState([]);
 
   //for update order status
- 
 
   useEffect(() => {
     let isMounted = true;
@@ -37,7 +36,6 @@ export default function List(props) {
       isMounted = false;
     };
   }, [props]);
-
 
   return (
     <View style={styles.container}>
@@ -75,7 +73,9 @@ export default function List(props) {
                       data={
                         cellData === 'Order'
                           ? props.element(rowData, index)
-                          :  (cellData ==="Product" ?  props.element(rowData, index): cellData )
+                          : cellData === 'Product'
+                          ? props.element(rowData, index)
+                          : cellData ==="ProductDetail" ?  props.element(rowData, index) :cellData
                       }
                       width={arrWidth[cellIndex]}
                       textStyle={styles.text}

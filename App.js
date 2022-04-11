@@ -22,6 +22,9 @@ import Message from './src/screens/admin/Message';
 import ProductDetail from './src/screens/admin/ProductDetail';
 import OrderDetail from './src/screens/admin/OrderDetail';
 import EditProduct from './src/screens/product/EditProduct';
+import EditChildProduct from './src/screens/product/EditChildProduct';
+import AddChildProduct from './src/screens/product/AddChildProduct';
+import AddProduct from './src/screens/product/AddProduct';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -52,7 +55,7 @@ function MyTabs({navigation}) {
       })}>
       <Tab.Screen name="Dashboard" component={AdminPage} />
       <Tab.Screen name="Product" component={Product} />
-    
+
       <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Order" component={Order} />
       <Tab.Screen name="Message" component={Message} />
@@ -74,7 +77,7 @@ function MyTabs({navigation}) {
           ),
         }}
       />
-        <Tab.Screen
+      <Tab.Screen
         name="ProductDetail"
         component={ProductDetail}
         options={{
@@ -92,7 +95,7 @@ function MyTabs({navigation}) {
           ),
         }}
       />
-        <Tab.Screen
+      <Tab.Screen
         name="OrderDetail"
         component={OrderDetail}
         options={{
@@ -110,16 +113,73 @@ function MyTabs({navigation}) {
           ),
         }}
       />
-         <Tab.Screen
+      <Tab.Screen
         name="EditProduct"
         component={EditProduct}
         options={{
           tabBarVisibilityAnimationConfig: true,
           tabBarButton: props => null,
           headerShown: true,
+          title: 'Edit Child Product',
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#F9ABF9'},
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Product')}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="EditChildProduct"
+        component={EditChildProduct}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
           title: 'Edit Product',
           headerTitleAlign: 'center',
-         headerStyle:{backgroundColor:"#F9ABF9"},
+          headerStyle: {backgroundColor: '#F9ABF9'},
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Product')}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AddChildProduct"
+        component={AddChildProduct}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Add child Product',
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#F9ABF9'},
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Product')}
+            />
+          ),
+        }}
+      />
+       <Tab.Screen
+        name="AddProduct"
+        component={AddProduct}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Add Product',
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#F9ABF9'},
           headerLeft: () => (
             <Icon
               name="arrow-back-outline"
