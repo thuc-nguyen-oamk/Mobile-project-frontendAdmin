@@ -119,6 +119,7 @@ function MyTabs({navigation}) {
           headerShown: true,
           title: 'Edit Product',
           headerTitleAlign: 'center',
+         headerStyle:{backgroundColor:"#F9ABF9"},
           headerLeft: () => (
             <Icon
               name="arrow-back-outline"

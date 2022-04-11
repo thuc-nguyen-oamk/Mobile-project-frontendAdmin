@@ -58,7 +58,7 @@ export default function Product({ navigation }) {
     const intervalCall = setInterval(() => {
       fetchData();
      
-    }, 1000000);
+    },5000);
     return () => {
       // clean up
       clearInterval(intervalCall);

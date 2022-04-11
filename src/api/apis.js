@@ -15,7 +15,7 @@ const URL = 'http://87.100.200.90:3000/';
 const instance = axios.create({
   baseURL: URL,
   headers: {
-    'content-type': 'application/json',
+    Accept: 'application/json',
   },
 });
 const authorized = axios.create({
@@ -133,6 +133,39 @@ export default {
     authorized({
       method: 'GET',
       url: `order/${payload}`,
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    })
+      .then(function (response) {
+        // handle success
+
+        return response.data;
+      })
+      .catch(function (error) {
+        // handle error
+
+        return error.message;
+        // alert(error.message);
+      }),
+  UpdateProduct: (payload, TOKEN) =>
+    fetch('http://87.100.200.90:3000/products/', {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${TOKEN}`,
+      },
+      body: payload,
+    })
+      .then(response => response.json())
+      .then(message => console.log(message))
+      .catch(error => console.error(error)),
+  GetCategory: TOKEN =>
+    authorized({
+      method: 'GET',
+      url: `/categories`,
       headers: {
         'content-type': 'application/json',
         Authorization: `Bearer ${TOKEN}`,

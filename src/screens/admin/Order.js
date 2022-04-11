@@ -57,7 +57,7 @@ export default function Order({navigation}) {
     const intervalCall = setInterval(() => {
       fetchData();
       console.log("run")
-    }, 1000000);
+    }, 50000);
     return () => {
       // clean up
       clearInterval(intervalCall);
