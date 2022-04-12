@@ -19,6 +19,7 @@ import Product from './src/screens/admin/Product';
 import Notification from './src/screens/admin/Notification';
 import Order from './src/screens/admin/Order';
 import Message from './src/screens/admin/Message';
+import Conversation from './src/screens/admin/Conversation';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -82,6 +83,7 @@ export default function App() {
         {/* <Stack.Screen name="Profile" component={Profile}  options={{headerShown:true, title:"Profile", headerTitleAlign:"center" }} /> */}
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="AdminHome" component={MyTabs} />
+        <Stack.Screen name="Conversation" component={Conversation} />
       </Stack.Navigator>
     </NavigationContainer>
   );

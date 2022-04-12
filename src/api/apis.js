@@ -72,4 +72,23 @@ export default {
         return error.message;
         // alert(error.message);
       }),
+  GetCustomerList: TOKEN =>
+    authorized({
+      method: 'GET',
+      url: '/messages/userList',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    })
+      .then(function (response) {
+        // handle success
+
+        return response.data;
+      })
+      .catch(function (error) {
+        // handle error
+        return error.message;
+        // alert(error.message);
+      }),
 };
