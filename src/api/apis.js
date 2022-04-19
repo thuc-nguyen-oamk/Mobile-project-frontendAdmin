@@ -9,14 +9,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // });
 
 const instance = axios.create({
-    baseURL: 'https://api.uniproject.xyz/eshopmb/',
-    headers: {
-      'content-type': 'application/json',
-    },
-  });
-  const authorized = axios.create({
-    baseURL: 'https://api.uniproject.xyz/eshopmb/',
-  });
+  baseURL: 'https://api.uniproject.xyz/eshopmb/',
+  headers: {
+    'content-type': 'application/json',
+  },
+});
+const authorized = axios.create({
+  baseURL: 'https://api.uniproject.xyz/eshopmb/',
+});
 
 // const instance = axios.create({
 //   baseURL: 'http://87.100.200.90:3000/',
@@ -72,10 +72,10 @@ export default {
         return error.message;
         // alert(error.message);
       }),
-  GetCustomerList: TOKEN =>
+  GetCustomerWithLastMessageList: TOKEN =>
     authorized({
       method: 'GET',
-      url: '/messages/userList',
+      url: '/messages/customerWithLastMessageList',
       headers: {
         'content-type': 'application/json',
         Authorization: `Bearer ${TOKEN}`,

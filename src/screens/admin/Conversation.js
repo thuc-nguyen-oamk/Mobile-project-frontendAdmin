@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {decode} from 'base-64';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {FlatList, StyleSheet, Text, TextInput, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import io from 'socket.io-client';
@@ -11,19 +11,53 @@ export default function Conversation({route, navigation}) {
   const customerId = route.params.customer_id;
   const [adminId, setAdminId] = useState('7252643');
 
+  const flatListRef = useRef(null);
+
+  AsyncStorage.getItem('messageLastSeenTimestamps', (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('messageLastSeenTimestamps from AS:', result);
+      let messageLastSeenTimestamps;
+
+      if (result == null) {
+        messageLastSeenTimestamps = [];
+      } else {
+        messageLastSeenTimestamps = JSON.parse(result);
+        const currentIndex = messageLastSeenTimestamps.findIndex(
+          item => item.customer_id == customerId,
+        );
+        if (currentIndex > -1) {
+          messageLastSeenTimestamps.splice(currentIndex, 1);
+        }
+      }
+
+      messageLastSeenTimestamps.push({
+        customer_id: customerId,
+        lastSeen: Date.now(),
+      });
+
+      AsyncStorage.setItem(
+        'messageLastSeenTimestamps',
+        JSON.stringify(messageLastSeenTimestamps),
+      );
+    }
+  });
+
   useEffect(() => {
     async function setupSocketIO() {
-      const token = await AsyncStorage.getItem('token');
+      let token = await AsyncStorage.getItem('token');
+      token = token.replace(/"/g, '');
       if (!token) {
         alert('Unauthorized.');
         return;
       }
-      const admin = JSON.parse(decode(token.split(".")[1]));
+      const admin = JSON.parse(decode(token.split('.')[1]));
       if (!admin || !admin.admin_id) {
         alert('Unauthorized.');
         return;
       }
-      setAdminId(admin.admin_id)
+      setAdminId(admin.admin_id);
       // apis then set adin id
       global.socket = io('https://api.uniproject.xyz/', {
         path: '/eshopmb/socket.io/',
@@ -38,6 +72,7 @@ export default function Conversation({route, navigation}) {
       });
 
       global.socket.on('join', data => {
+        console.log('data:', data);
         setMessageList(data.messageList);
       });
 
@@ -81,6 +116,8 @@ export default function Conversation({route, navigation}) {
           <Text style={styles.title}>Contact Store</Text>
         </View>
         <FlatList
+          ref={flatListRef}
+          onContentSizeChange={() => flatListRef.current.scrollToEnd()}
           data={messageList}
           keyExtractor={(item, index) => index.toString()}
           renderItem={MessageItem}
