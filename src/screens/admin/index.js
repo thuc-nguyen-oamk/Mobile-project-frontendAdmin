@@ -82,7 +82,7 @@ export default function AdminPage({navigation}) {
     const intervalCall = setInterval(() => {
       fetchData();
      
-    }, 50000);
+    }, 10000);
     return () => {
       // clean up
       clearInterval(intervalCall);

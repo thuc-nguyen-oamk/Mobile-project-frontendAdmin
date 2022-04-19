@@ -3,22 +3,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert} from 'react-native';
 
 const URL = 'https://api.uniproject.xyz/eshopmb/';
-
-const instance = axios.create({
-  baseURL: URL,
-  headers: {
-    'content-type': 'application/json',
-  },
-});
-
 // const URL = 'http://87.100.200.90:3000';
 
 // const instance = axios.create({
 //   baseURL: URL,
 //   headers: {
-//     Accept: 'application/json',
+//     'content-type': 'application/json',
 //   },
 // });
+
+
+const instance = axios.create({
+  baseURL: URL,
+  headers: {
+    Accept: 'application/json',
+  },
+});
 const authorized = axios.create({
   baseURL: URL,
 });

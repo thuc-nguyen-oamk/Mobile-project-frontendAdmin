@@ -134,6 +134,7 @@ const EditProduct = ({route}) => {
     formData.append('display_price', productPrice);
     formData.append('display_price_discounted', productDiscount);
 
+    console.log(formData);
     await apis.UpdateProduct(formData, token);
   };
   return (
@@ -208,7 +209,7 @@ const EditProduct = ({route}) => {
                 style={styles.TextInput}
                 width="98%"
                 placeholderTextColor="#BDBDBD"
-                value={productPrice.toString()}
+                value={productPrice? productPrice.toString() : ""}
                 onChangeText={e => setProductPrice(e)}
               />
             </View>
@@ -218,7 +219,7 @@ const EditProduct = ({route}) => {
                 style={styles.TextInput}
                 width="98%"
                 placeholderTextColor="#BDBDBD"
-                value={productDiscount.toString()}
+                value={productDiscount ? productDiscount.toString() : ""}
                 onChangeText={e => setProductDiscount(e)}
               />
             </View>

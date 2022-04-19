@@ -13,8 +13,6 @@ import {
 import List from '../../components/list';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import apis from '../../api/apis';
-
-var numeral = require('numeral');
 export default function Product({ navigation }) {
   const [productList, setProductList] = useState([]);
 
