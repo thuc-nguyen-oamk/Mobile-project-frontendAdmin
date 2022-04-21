@@ -27,7 +27,7 @@ import {
 import {launchImageLibrary} from 'react-native-image-picker';
 import apis from '../../api/apis';
 
-const EditChildProduct = ({route}) => {
+const EditChildProduct = ({route,navigation}) => {
   const data = JSON.parse(route.params?.data);
   const [images, setImages] = useState({uri: "123", name: 'SomeImageName.jpg', type: 'image/jpg'});
   const [token, setToken] = useState('');
@@ -110,6 +110,7 @@ const EditChildProduct = ({route}) => {
     formData.append('product_price_discounted', productDiscount);
     console.log(formData)
     await apis.UpdateChildProduct(formData, token);
+    navigation.navigate('ProductDetail',{"product_id":productID})
   };
   return (
     <SafeAreaView style={{flex: 1}}>

@@ -27,7 +27,7 @@ import {
 import {launchImageLibrary} from 'react-native-image-picker';
 import apis from '../../api/apis';
 
-const EditProduct = ({route}) => {
+const EditProduct = ({route,navigation}) => {
   const data = JSON.parse(route.params?.data);
   const [images, setImages] = useState({});
   const [token, setToken] = useState('');
@@ -138,6 +138,7 @@ const EditProduct = ({route}) => {
 
     console.log(formData);
     await apis.UpdateProduct(formData, token);
+    navigation.navigate('ProductDetail',{"product_id":productID})
 
     setImages({uri: data[1], name: 'SomeImageName.jpg', type: 'image/jpg'});
     setProductID('')
