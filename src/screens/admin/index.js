@@ -39,14 +39,18 @@ export default function AdminPage({navigation}) {
   };
 
   async function fetchData() {
+
     const temp = await AsyncStorage.getItem('adminInfo');
     var token_temp = await AsyncStorage.getItem('token');
     token_temp = token_temp.replace(/"/g, '');
      apis.BasicInformation(token_temp).then(response => {
      
       setPannelInfor(response);
-      const list_temp = response['listOrder2']
     
+      const list_temp = response['listOrder2']
+      
+   
+
       const array_temp =[]
       for( var i = 0 ;i < (list_temp.length > 5 ? 5 : list_temp.length) ; i++)
       {
@@ -57,6 +61,7 @@ export default function AdminPage({navigation}) {
        (new Date(list_temp[i]['order_created_at'])).toLocaleString('YYYY-MM-dd'),
         ))
       }
+      
       setOrderDataSet(array_temp)
     });
     apis.ProductList(token_temp).then(response => {
@@ -78,18 +83,20 @@ export default function AdminPage({navigation}) {
     setToken(token_temp);
     setAdminInfo(JSON.parse(temp));
   }
+
+
+
   useEffect(() => {
     const intervalCall = setInterval(() => {
       fetchData();
      
-    }, 10000);
+    }, 5000);
+    
     return () => {
       // clean up
       clearInterval(intervalCall);
     };
   }, []);
-
-
 
   
   return (

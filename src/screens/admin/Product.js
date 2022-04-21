@@ -4,10 +4,7 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
   Button,
-  SafeAreaView,
-  ScrollView,
   Image,
 } from 'react-native';
 import List from '../../components/list';

@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert} from 'react-native';
 
-const URL = 'https://api.uniproject.xyz/eshopmb/';
+const URL = 'https://api.uniproject.xyz/eshopmb';
 // const URL = 'http://87.100.200.90:3000';
 
 // const instance = axios.create({
@@ -11,7 +11,6 @@ const URL = 'https://api.uniproject.xyz/eshopmb/';
 //     'content-type': 'application/json',
 //   },
 // });
-
 
 const instance = axios.create({
   baseURL: URL,
@@ -49,26 +48,7 @@ export default {
         return error.message;
         // alert(error.message);
       }),
-  BasicInformation: TOKEN =>
-    authorized({
-      method: 'GET',
-      url: '/order/statics',
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `Bearer ${TOKEN}`,
-      },
-    })
-      .then(function (response) {
-        // handle success  getTokenFromStorage()
-
-        return response.data;
-      })
-      .catch(function (error) {
-        // handle error
-
-        return error.message;
-        // alert(error.message);
-      }),
+ 
   ProductList: TOKEN =>
     authorized({
       method: 'get',
@@ -228,6 +208,44 @@ export default {
       .catch(function (error) {
         // handle error
         console.log(error.message)
+        return error.message;
+        // alert(error.message);
+      }),
+  BasicInformation: TOKEN =>
+    authorized({
+      method: 'GET',
+      url: '/order/statics',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    })
+      .then(function (response) {
+        // handle success
+
+        return response.data;
+      })
+      .catch(function (error) {
+        // handle error
+        return error.message;
+        // alert(error.message);
+      }),
+  GetCustomerWithLastMessageList: TOKEN =>
+    authorized({
+      method: 'GET',
+      url: '/messages/customerWithLastMessageList',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    })
+      .then(function (response) {
+        // handle success
+
+        return response.data;
+      })
+      .catch(function (error) {
+        // handle error
         return error.message;
         // alert(error.message);
       }),
