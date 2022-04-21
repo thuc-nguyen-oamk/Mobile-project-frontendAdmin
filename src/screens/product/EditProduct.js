@@ -70,7 +70,7 @@ const EditProduct = ({route}) => {
   }, [route.params?.data]);
   useEffect(() => {
     const controller = new AbortController();
-
+    console.log(data[1])
     setImages({uri: data[1], name: 'SomeImageName.jpg', type: 'image/jpg'});
     setProductID(data[0]);
     setProductName(data[2]);
@@ -106,6 +106,11 @@ const EditProduct = ({route}) => {
         return;
       } else {
         ImageInformation = response['assets'][0];
+        setImages({
+          uri: ImageInformation.uri,
+          name: ImageInformation.fileName,
+          type: ImageInformation.type,
+        });
       }
 
       // console.log('uri -> ', ImageInformation.uri);
@@ -114,15 +119,12 @@ const EditProduct = ({route}) => {
       // console.log('fileSize -> ', ImageInformation.fileSize);
       // console.log('type -> ', ImageInformation.type);
       // console.log('fileName -> ', ImageInformation.fileName);
-      setImages({
-        uri: ImageInformation.uri,
-        name: ImageInformation.fileName,
-        type: ImageInformation.type,
-      });
+     
     });
   };
   const Update = async () => {
     //console.log("Upload image:" ,images)
+    console.log("update: ",images)
     console.log('save');
     const formData = new FormData();
     formData.append('myImage', images);
@@ -136,6 +138,17 @@ const EditProduct = ({route}) => {
 
     console.log(formData);
     await apis.UpdateProduct(formData, token);
+
+    setImages({uri: data[1], name: 'SomeImageName.jpg', type: 'image/jpg'});
+    setProductID('')
+    setProductName('');
+    setProductBrand('');
+    setProductPrice(0);
+    setProductDiscount(0);
+    setProductDescription('');
+
+
+
   };
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -192,7 +205,7 @@ const EditProduct = ({route}) => {
                   width="98%"
                   placeholderTextColor="#BDBDBD"
                   value={productBrand}
-                  onChangeText={e => setProductName(e)}
+                  onChangeText={e => setProductBrand(e)}
                 />
               </View>
             </View>

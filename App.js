@@ -25,6 +25,7 @@ import EditProduct from './src/screens/product/EditProduct';
 import EditChildProduct from './src/screens/product/EditChildProduct';
 import AddChildProduct from './src/screens/product/AddChildProduct';
 import AddProduct from './src/screens/product/AddProduct';
+import Conversation from './src/screens/admin/Conversation';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -201,6 +202,7 @@ export default function App() {
         {/* <Stack.Screen name="Profile" component={Profile}  options={{headerShown:true, title:"Profile", headerTitleAlign:"center" }} /> */}
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="AdminHome" component={MyTabs} />
+        <Stack.Screen name="Conversation" component={Conversation} />
       </Stack.Navigator>
     </NavigationContainer>
   );

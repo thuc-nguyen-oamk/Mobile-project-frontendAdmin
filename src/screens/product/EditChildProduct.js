@@ -48,7 +48,7 @@ const EditChildProduct = ({route}) => {
   useEffect(() => {
     const controller = new AbortController();
     fetchData()
-
+    
     setImages({uri: data[1], name: 'SomeImageName.jpg', type: 'image/jpg'});
     setProductID(data[0]);
     setProductPrice(data[3]);
@@ -100,6 +100,7 @@ const EditChildProduct = ({route}) => {
   const Update = async () => {
     //console.log("Upload image:" ,images)
     console.log('save');
+    console.log("update: ",images)
     const formData = new FormData();
     formData.append('product_images', images);
     formData.append('product_detail_id', productID);

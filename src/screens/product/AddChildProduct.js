@@ -26,7 +26,7 @@ import {
 import {launchImageLibrary} from 'react-native-image-picker';
 import apis from '../../api/apis';
 
-const AddChildProduct = ({route}) => {
+const AddChildProduct = ({route,navigation}) => {
   const data = JSON.parse(route.params?.data);
   
   const [images, setImages] = useState({});
@@ -81,6 +81,11 @@ const AddChildProduct = ({route}) => {
         return;
       } else {
         ImageInformation = response['assets'][0];
+        setImages({
+          uri: ImageInformation.uri,
+          name: ImageInformation.fileName,
+          type: ImageInformation.type,
+        });
       }
 
       // console.log('uri -> ', ImageInformation.uri);
@@ -89,16 +94,13 @@ const AddChildProduct = ({route}) => {
       // console.log('fileSize -> ', ImageInformation.fileSize);
       // console.log('type -> ', ImageInformation.type);
       // console.log('fileName -> ', ImageInformation.fileName);
-      setImages({
-        uri: ImageInformation.uri,
-        name: ImageInformation.fileName,
-        type: ImageInformation.type,
-      });
+   
     });
   };
   const Update = async () => {
     //console.log("Upload image:" ,images)
     console.log('save');
+    console.log(images)
     const formData = new FormData();
     formData.append('product_images', images);
     formData.append('product_id', productID);
@@ -108,6 +110,7 @@ const AddChildProduct = ({route}) => {
     formData.append('product_price_discounted', productDiscount);
     console.log(formData);
     await apis.AddChildProduct(formData, token);
+    navigation.navigate('ProductDetail',{"product_id":productID})
   };
   return (
     <SafeAreaView style={{flex: 1}}>
