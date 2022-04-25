@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert} from 'react-native';
 
 const URL = 'https://api.uniproject.xyz/eshopmb';
-// const URL = 'http://87.100.200.90:3000';
+// const URL = 'http://87.100.225.124:3000';
 
 // const instance = axios.create({
 //   baseURL: URL,
@@ -48,7 +48,7 @@ export default {
         return error.message;
         // alert(error.message);
       }),
- 
+
   ProductList: TOKEN =>
     authorized({
       method: 'get',
@@ -197,17 +197,16 @@ export default {
         'content-type': 'application/json',
         Authorization: `Bearer ${TOKEN}`,
       },
-      data:payload
+      data: payload,
     })
-      .then( (response) =>{
+      .then(response => {
         // handle success
         //console.log(response.data.message)
-        Alert.alert(response.data.message)
-       
+        Alert.alert(response.data.message);
       })
       .catch(function (error) {
         // handle error
-        console.log(error.message)
+        console.log(error.message);
         return error.message;
         // alert(error.message);
       }),
@@ -249,4 +248,46 @@ export default {
         return error.message;
         // alert(error.message);
       }),
+  CategoryList: () =>
+    instance({
+      method: 'get',
+      url: '/categories/',
+    })
+      .then(function (response) {
+        // handle success
+
+        return response.data;
+      })
+      .catch(function (error) {
+        // handle error
+
+        return error.message;
+        // alert(error.message);
+      }),
+  updateCategory: (payload, TOKEN) =>
+    fetch(`${URL}/categories/`, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${TOKEN}`,
+      },
+      body: payload,
+    })
+      .then(response => response.json())
+      .then(message => Alert.alert(message.message))
+      .catch(error => console.error(error)),
+  addCategory: (payload, TOKEN) =>
+    fetch(`${URL}/categories/`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${TOKEN}`,
+      },
+      body: payload,
+    })
+      .then(response => response.json())
+      .then(message => Alert.alert(message.message))
+      .catch(error => console.error(error)),
 };

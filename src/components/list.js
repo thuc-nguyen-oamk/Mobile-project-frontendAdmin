@@ -75,7 +75,10 @@ export default function List(props) {
                           ? props.element(rowData, index)
                           : cellData === 'Product'
                           ? props.element(rowData, index)
-                          : cellData ==="ProductDetail" ?  props.element(rowData, index) :cellData
+                          : cellData ==="ProductDetail" 
+                          ?  props.element(rowData, index) 
+                          :cellData ==="Category"
+                          ?  props.element(rowData, index)  : cellData
                       }
                       width={arrWidth[cellIndex]}
                       textStyle={styles.text}
