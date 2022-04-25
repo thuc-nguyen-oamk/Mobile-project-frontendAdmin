@@ -110,7 +110,7 @@ const EditCategory = ({route,navigation}) => {
 
    console.log(formData)
      await apis.updateCategory(formData, token);
-   navigation.navigate('Category')
+   navigation.navigate('Category',{signal:0})
 
     // setImages({uri: data[1], name: 'SomeImageName.jpg', type: 'image/jpg'});
     // setCategoryID('')

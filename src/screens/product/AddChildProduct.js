@@ -111,7 +111,13 @@ const AddChildProduct = ({route,navigation}) => {
     console.log(formData);
     await apis.AddChildProduct(formData, token);
    // navigation.navigate('ProductDetail',{"product_id":productID})
-   navigation.navigate('Product')
+   setProductID(0);
+   setProductPrice(0);
+   setProductDiscount(0);
+   setProductStock(0);
+   setProductColor("");
+   setImages({});
+   navigation.navigate('ProductDetail',{"product_id":data})
   };
   return (
     <SafeAreaView style={{flex: 1}}>

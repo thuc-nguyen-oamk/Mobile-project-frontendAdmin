@@ -187,7 +187,10 @@ export default {
       body: payload,
     })
       .then(response => response.json())
-      .then(message => Alert.alert(message.message))
+      .then(message =>  {
+        Alert.alert(message.message)
+        
+      } )
       .catch(error => console.error(error)),
   AddProduct: (payload, TOKEN) =>
     authorized({

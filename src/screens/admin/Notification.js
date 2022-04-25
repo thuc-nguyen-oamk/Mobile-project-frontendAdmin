@@ -4,12 +4,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import apis from '../../api/apis';
 import List from '../../components/list';
 import Icon from 'react-native-vector-icons/FontAwesome';
-export default function Notification({navigation}) {
+export default function Notification({route, navigation}) {
   //Store original order list
   const [categoryList, setCategoryList] = useState([]);
   //Store token
   const [token, setToken] = useState('');
   //Get the first resource
+  const [refresh, setRefresh] = useState( 0);
   async function fetchData() {
     var token_temp = await AsyncStorage.getItem('token');
     token_temp = token_temp.replace(/"/g, '');
@@ -43,14 +44,24 @@ export default function Notification({navigation}) {
   }
 
   useEffect(() => {
-    const intervalCall = setInterval(() => {
-      fetchData();
-    }, 5000);
-    return () => {
-      // clean up
-      clearInterval(intervalCall);
-    };
-  }, []);
+    // const intervalCall = setInterval(() => {
+    //   fetchData();
+    // }, 5000);
+    // return () => {
+    //   // clean up
+    //   clearInterval(intervalCall);
+    // };
+
+     
+      console.log('Category fetch');
+      navigation.addListener(
+        'focus',
+        payload => {
+          fetchData();
+        }
+    );
+   
+  },[]);
   //Definite order table data to pass to Table
   const orderTable = {
     head: ['ID', 'Banner', 'Name', 'Action'],
@@ -58,10 +69,6 @@ export default function Notification({navigation}) {
     width: [50, 150, 150, 150],
   };
 
-  // Create button for order
-  function getOrderDetail(data, index) {
-    console.log(data);
-  }
   const element = (data, index) => (
     <View
       style={{
@@ -77,6 +84,7 @@ export default function Notification({navigation}) {
         size={24}
         onPress={() =>
           navigation.navigate('EditCategory', {data: JSON.stringify(data)})
+
         }
       />
     </View>
@@ -86,7 +94,14 @@ export default function Notification({navigation}) {
     <>
       <View style={[styles.head]}>
         <Text style={styles.title}>List of Categories</Text>
-        <Icon name="plus" size={30} color="black" onPress={()=>{navigation.navigate("AddCategory")}} />
+        <Icon
+          name="plus"
+          size={30}
+          color="black"
+          onPress={() => {
+            navigation.navigate('AddCategory');
+          }}
+        />
       </View>
 
       <List title="" data={orderTable} element={element}></List>

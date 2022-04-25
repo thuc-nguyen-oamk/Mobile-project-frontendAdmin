@@ -54,15 +54,21 @@ export default function Order({navigation}) {
   }
 
   useEffect(() => {
-    const intervalCall = setInterval(() => {
-      fetchData();
-      console.log("run")
-    }, 5000);
-    return () => {
-      // clean up
-      clearInterval(intervalCall);
-    };
-    
+    // const intervalCall = setInterval(() => {
+    //   fetchData();
+    //   console.log("run")
+    // }, 5000);
+    // return () => {
+    //   // clean up
+    //   clearInterval(intervalCall);
+    // };
+    console.log('Order fetch');
+    navigation.addListener(
+      'focus',
+      payload => {
+        fetchData();
+      }
+  );
   }, []);
   //Definite order table data to pass to Table
   const orderTable = {

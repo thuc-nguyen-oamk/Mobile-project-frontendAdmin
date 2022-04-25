@@ -33,7 +33,7 @@ const EditChildProduct = ({route,navigation}) => {
   const [token, setToken] = useState('');
  
   data[1] = data[1]['props']['source']['uri'];
-  console.log(data[1])
+  
   //For product name, brand, price and discount price
   const [productID, setProductID] = useState('');
   const [productPrice, setProductPrice] = useState(0);
@@ -48,7 +48,7 @@ const EditChildProduct = ({route,navigation}) => {
   useEffect(() => {
     const controller = new AbortController();
     fetchData()
-    
+   
     setImages({uri: data[1], name: 'SomeImageName.jpg', type: 'image/jpg'});
     setProductID(data[0]);
     setProductPrice(data[3]);
@@ -99,18 +99,19 @@ const EditChildProduct = ({route,navigation}) => {
   };
   const Update = async () => {
     //console.log("Upload image:" ,images)
-    console.log('save');
-    console.log("update: ",images)
+    
     const formData = new FormData();
     formData.append('product_images', images);
-    formData.append('product_detail_id', productID);
-    formData.append('product_stock', productStock);
+    formData.append('product_detail_id', productID.toString());
+    formData.append('product_stock', productStock.toString());
     formData.append('product_color', productColor);
-    formData.append('product_price', productPrice);
-    formData.append('product_price_discounted', productDiscount);
-    console.log(formData)
+    formData.append('product_price', productPrice.toString());
+    formData.append('product_price_discounted', productDiscount.toString());
+  
     await apis.UpdateChildProduct(formData, token);
-    navigation.navigate('ProductDetail',{"product_id":productID})
+
+    navigation.navigate('Product')
+    
   };
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -146,7 +147,7 @@ const EditChildProduct = ({route,navigation}) => {
                 width="98%"
                 placeholderTextColor="#BDBDBD"
                 value={productColor}
-                onChangeText={e => setProductColor(e)}
+                onChangeText={e => setProductColor(e.toString())}
               />
             </View>
             <View width="50%">
@@ -156,7 +157,7 @@ const EditChildProduct = ({route,navigation}) => {
                 width="98%"
                 placeholderTextColor="#BDBDBD"
                 value={productStock.toString()}
-                onChangeText={e => setProductStock(e)}
+                onChangeText={e => setProductStock(e.toString())}
               />
             </View>
           </View>
@@ -174,7 +175,7 @@ const EditChildProduct = ({route,navigation}) => {
                 width="98%"
                 placeholderTextColor="#BDBDBD"
                 value={productPrice.toString()}
-                onChangeText={e => setProductPrice(e)}
+                onChangeText={e => setProductPrice(e.toString())}
               />
             </View>
             <View width="50%">
@@ -184,7 +185,7 @@ const EditChildProduct = ({route,navigation}) => {
                 width="98%"
                 placeholderTextColor="#BDBDBD"
                 value={productDiscount.toString()}
-                onChangeText={e => setProductDiscount(e)}
+                onChangeText={e => setProductDiscount(e.toString())}
               />
             </View>
           </View>

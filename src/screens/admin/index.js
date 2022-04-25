@@ -87,15 +87,13 @@ export default function AdminPage({navigation}) {
 
 
   useEffect(() => {
-    const intervalCall = setInterval(() => {
-      fetchData();
-     
-    }, 5000);
-    
-    return () => {
-      // clean up
-      clearInterval(intervalCall);
-    };
+    console.log('Category fetch');
+      navigation.addListener(
+        'focus',
+        payload => {
+          fetchData();
+        }
+    );
   }, []);
 
   

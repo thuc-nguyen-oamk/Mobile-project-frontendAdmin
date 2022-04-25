@@ -50,14 +50,21 @@ export default function Product({ navigation }) {
     });
   }
   useEffect(() => {
-    const intervalCall = setInterval(() => {
-      fetchData();
+    // const intervalCall = setInterval(() => {
+    //   fetchData();
      
-    },5000);
-    return () => {
-      // clean up
-      clearInterval(intervalCall);
-    };
+    // },5000);
+    // return () => {
+    //   // clean up
+    //   clearInterval(intervalCall);
+    // };
+    console.log('product fetch');
+    navigation.addListener(
+      'focus',
+      payload => {
+        fetchData();
+      }
+  );
   }, []);
 
   const productTable = {
