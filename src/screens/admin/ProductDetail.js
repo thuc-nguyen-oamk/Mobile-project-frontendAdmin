@@ -14,6 +14,7 @@ import List from '../../components/list';
 export default function ProductDetail({route, navigation}) {
   const [productList, setProductList] = useState([]);
   const [producDetailtList, setProductDetailList] = useState([]);
+  const [response,setResponse]= useState([])
   const productTable = {
     head: [
       'ID',
@@ -39,10 +40,13 @@ export default function ProductDetail({route, navigation}) {
   async function fetchData() {
     var token_temp = await AsyncStorage.getItem('token');
     token_temp = token_temp.replace(/"/g, '');
-    apis.GetProductByID(token_temp, route.params?.product_id).then(response => {
-      const list_temp = response;
+   await apis.GetProductByID(token_temp, route.params?.product_id).then(response => {
 
-      const list_detail = list_temp[0]['details'];
+
+      const list_temp = response;
+      var list_detail =list_temp[0]['details'];
+  
+      
       const array_temp = [];
       const detail_product_array_temp = [];
 
@@ -95,14 +99,18 @@ export default function ProductDetail({route, navigation}) {
     });
   }
   useEffect(() => {
-    let isMounted = true;
+   
+      let isMounted = true;
 
-    fetchData();
-    return () => {
-      setProductList([]);
-      setProductDetailList([]);
-    };
-  }, [route.params?.product_id]);
+      fetchData();
+      
+      return () => {
+        setProductList([]);
+        setProductDetailList([]);
+      
+    }
+   
+  },[route.params?.product_id]);
   const element = (data, index) => (
     <View
       style={{

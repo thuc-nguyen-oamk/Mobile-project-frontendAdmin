@@ -113,7 +113,7 @@ export default {
   GetOrderByID: (TOKEN, payload) =>
     authorized({
       method: 'GET',
-      url: `order/${payload}`,
+      url: `/order/${payload}`,
       headers: {
         'content-type': 'application/json',
         Authorization: `Bearer ${TOKEN}`,
