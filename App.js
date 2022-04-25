@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Button} from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -20,10 +20,13 @@ import Notification from './src/screens/admin/Notification';
 import Order from './src/screens/admin/Order';
 import Message from './src/screens/admin/Message';
 import Conversation from './src/screens/admin/Conversation';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MyTabs({navigation}) {
+  const [newMessageBadge, setNewMessageBadge] = useState(null);
+
   return (
     <Tab.Navigator
       initialRouteName="Dashboard"
@@ -48,11 +51,17 @@ function MyTabs({navigation}) {
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
       })}>
-      <Tab.Screen name="Dashboard" component={AdminPage} />
+      {/* <Tab.Screen name="Dashboard" component={AdminPage} /> */}
+      <Tab.Screen name='Dashboard'>
+        {(props) => <AdminPage {...props} setNewMessageBadge={setNewMessageBadge}/>}
+      </Tab.Screen>
       <Tab.Screen name="Product" component={Product} />
       <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Order" component={Order} />
-      <Tab.Screen name="Message" component={Message} />
+      {/* <Tab.Screen name="Message" component={Message} /> */}
+      <Tab.Screen name='Message' options={{ tabBarBadge: newMessageBadge }}>
+        {(props) => <Message {...props} setNewMessageBadge={setNewMessageBadge}/>}
+      </Tab.Screen>
       <Tab.Screen
         name="Profile"
         component={Profile}
@@ -75,6 +84,8 @@ function MyTabs({navigation}) {
   );
 }
 export default function App() {
+  
+
   return (
     <NavigationContainer>
       <Stack.Navigator

@@ -12,8 +12,16 @@ import List from '../../components/list';
 import Pannel from '../../components/panel';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import apis from '../../api/apis';
+
+import io from 'socket.io-client';
+
+const API_ADDRESS = "https://api.uniproject.xyz/"
+const SOCKETIO_PATH = "/eshopmb/socket.io/"
+
 var numeral = require('numeral');
-export default function AdminPage({navigation}) {
+
+export default function AdminPage({navigation, setNewMessageBadge}) {
+  console.log("setNewMessageBadge:", setNewMessageBadge);
   const [adminInfo, setAdminInfo] = useState({});
   const [pannelInfor, setPannelInfor] = useState({});
   const [token, setToken] = useState('');
@@ -61,6 +69,29 @@ export default function AdminPage({navigation}) {
     }
 
     fetchData();
+
+    // connect to the socketio server
+    console.log('connect to the socketio server');
+    global.socket = io(API_ADDRESS, {path: SOCKETIO_PATH});
+
+    AsyncStorage.getItem('token', (err, result) => {
+      if (err) {
+        cosole.error(err);
+        return;
+      }
+      if (result) {
+        const token = result.replace(/"/g, '');
+        console.log("token xxx:", token);
+        global.socket.on('connect', () => {
+          global.socket.emit('notifications: admin new message', {token});
+        });
+      }
+    });
+
+    global.socket.on('notifications: admin new message', newMessage => {
+      console.log('newMessage', newMessage);
+      setNewMessageBadge('!');
+    });
   }, []);
 
   //console.log(productTable.head)

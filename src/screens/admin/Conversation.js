@@ -58,25 +58,27 @@ export default function Conversation({route, navigation}) {
         return;
       }
       setAdminId(admin.admin_id);
-      // apis then set adin id
-      global.socket = io('https://api.uniproject.xyz/', {
-        path: '/eshopmb/socket.io/',
-      });
+      console.log("global.socket:", global.socket.id);
+      // global.socket = io('https://api.uniproject.xyz/', {
+      //   path: '/eshopmb/socket.io/',
+      // });
+      // console.log("global.socket 2:", global.socket.id);
 
-      global.socket.on('connect', () => {
-        global.socket.emit('admin join', {token, customer_id: customerId});
-      });
+      // global.socket.on('connect', () => {
+      //   global.socket.emit('admin join', {token, customer_id: customerId});
+      // });
+      global.socket.emit('chat: admin join', {token, customer_id: customerId});
 
-      global.socket.on('force disconnect', data => {
+      global.socket.on('chat: force disconnect', data => {
         alert(data.msg);
       });
 
-      global.socket.on('join', data => {
+      global.socket.on('chat: join', data => {
         console.log('data:', data);
         setMessageList(data.messageList);
       });
 
-      global.socket.on('message', newMessage => {
+      global.socket.on('chat: message', newMessage => {
         setMessageList(prevState => [...prevState, newMessage]);
       });
     }
@@ -85,7 +87,7 @@ export default function Conversation({route, navigation}) {
   }, []);
 
   function sendMessage() {
-    global.socket.emit('message', {
+    global.socket.emit('chat: message', {
       message_text: messageText,
       sender_id: adminId,
       receiver_id: customerId,

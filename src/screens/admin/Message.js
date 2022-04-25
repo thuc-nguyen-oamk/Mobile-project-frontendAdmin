@@ -4,10 +4,22 @@ import apis from '../../api/apis';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Card from '../../components/Card';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {decode} from 'base-64';
 
-export default function Message({navigation}) {
+export default function Message({navigation, setNewMessageBadge}) {
   const [customerList, setCustomerList] = useState([]);
   let token;
+  console.log("Message comp render nà:" );
+  async function fetchCustomerList() {
+    token = await AsyncStorage.getItem('token');
+    token = token.replace(/"/g, '');
+    await apis.GetCustomerWithLastMessageList(token).then(response => {
+      console.log('GetCustomerList response:', response);
+      setCustomerList(response);
+    });
+  }
+
+  fetchCustomerList();
 
   // AsyncStorage.removeItem('messageLastSeenTimestamps')
 
@@ -35,7 +47,46 @@ export default function Message({navigation}) {
     }
 
     fetchCustomerList();
+
+    global.socket.on('chat: message', newMessage => {
+      console.log("Message comp - newMessage:", newMessage);
+      const customer_id = newMessage.room
+      const c = customerList.find(item => item.customer_id == customer_id)
+      console.log("c:", c);
+    });
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setNewMessageBadge(null);
+
+      AsyncStorage.getItem('token', (err, result) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        if (!result) {
+          alert('Please login first.');
+          return;
+        }
+
+        const token = result.replace(/"/g, '');
+        const admin = JSON.parse(decode(token.split('.')[1]));
+
+        if (!admin || !admin.admin_id) {
+          alert('Please login first.');
+          return;
+        }
+
+        console.log('token:', token);
+
+        // global.socket.emit('chat: admin join', {token});
+      });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View>
