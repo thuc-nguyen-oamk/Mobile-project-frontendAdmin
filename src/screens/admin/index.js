@@ -12,8 +12,15 @@ import List from '../../components/list';
 import Pannel from '../../components/panel';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import apis from '../../api/apis';
+
+import io from 'socket.io-client';
+
+const API_ADDRESS = "https://api.uniproject.xyz/"
+const SOCKETIO_PATH = "/eshopmb/socket.io/"
+
 var numeral = require('numeral');
-export default function AdminPage({navigation}) {
+
+export default function AdminPage({navigation, setNewMessageBadge}) {
   const [adminInfo, setAdminInfo] = useState({});
   const [pannelInfor, setPannelInfor] = useState({});
   const [productDataSet,setProductDataSet] = useState([]);
@@ -38,7 +45,10 @@ export default function AdminPage({navigation}) {
     width: [50, 100, 150, 100, 100],
   };
 
-  async function fetchData() {
+
+
+  useEffect(() => {
+      async function fetchData() {
 
     const temp = await AsyncStorage.getItem('adminInfo');
     var token_temp = await AsyncStorage.getItem('token');
@@ -84,9 +94,28 @@ export default function AdminPage({navigation}) {
     setAdminInfo(JSON.parse(temp));
   }
 
+    fetchData();
 
+    // connect to the socketio server
+    global.socket = io(API_ADDRESS, {path: SOCKETIO_PATH});
 
-  useEffect(() => {
+    AsyncStorage.getItem('token', (err, result) => {
+      if (err) {
+        cosole.error(err);
+        return;
+      }
+      if (result) {
+        const token = result.replace(/"/g, '');
+        global.socket.on('connect', () => {
+          global.socket.emit('notifications: admin new message', {token});
+        });
+      }
+    });
+
+    global.socket.on('notifications: admin new message', newMessage => {
+      setNewMessageBadge('!');
+    });
+    
     console.log('Category fetch');
       navigation.addListener(
         'focus',

@@ -9,15 +9,15 @@ export default function Conversation({route, navigation}) {
   const [messageText, setMessageText] = useState('');
   const [messageList, setMessageList] = useState([]);
   const customerId = route.params.customer_id;
-  const [adminId, setAdminId] = useState('7252643');
+  const customerName = route.params.customer_name;
+  const [adminId, setAdminId] = useState('');
 
   const flatListRef = useRef(null);
 
   AsyncStorage.getItem('messageLastSeenTimestamps', (err, result) => {
     if (err) {
-      console.log(err);
+      console.error(err);
     } else {
-      console.log('messageLastSeenTimestamps from AS:', result);
       let messageLastSeenTimestamps;
 
       if (result == null) {
@@ -48,35 +48,30 @@ export default function Conversation({route, navigation}) {
     async function setupSocketIO() {
       let token = await AsyncStorage.getItem('token');
       token = token.replace(/"/g, '');
+
       if (!token) {
         alert('Unauthorized.');
         return;
       }
       const admin = JSON.parse(decode(token.split('.')[1]));
+
       if (!admin || !admin.admin_id) {
         alert('Unauthorized.');
         return;
       }
+
       setAdminId(admin.admin_id);
-      // apis then set adin id
-      global.socket = io('https://api.uniproject.xyz/', {
-        path: '/eshopmb/socket.io/',
-      });
+      global.socket.emit('chat: admin join', {token, customer_id: customerId});
 
-      global.socket.on('connect', () => {
-        global.socket.emit('admin join', {token, customer_id: customerId});
-      });
-
-      global.socket.on('force disconnect', data => {
+      global.socket.on('chat: force disconnect', data => {
         alert(data.msg);
       });
 
-      global.socket.on('join', data => {
-        console.log('data:', data);
+      global.socket.on('chat: join', data => {
         setMessageList(data.messageList);
       });
 
-      global.socket.on('message', newMessage => {
+      global.socket.on('chat: message', newMessage => {
         setMessageList(prevState => [...prevState, newMessage]);
       });
     }
@@ -85,7 +80,7 @@ export default function Conversation({route, navigation}) {
   }, []);
 
   function sendMessage() {
-    global.socket.emit('message', {
+    global.socket.emit('chat: message', {
       message_text: messageText,
       sender_id: adminId,
       receiver_id: customerId,
@@ -113,7 +108,7 @@ export default function Conversation({route, navigation}) {
     <>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Contact Store</Text>
+          <Text style={styles.title}>{customerName}'s Conversation</Text>
         </View>
         <FlatList
           ref={flatListRef}

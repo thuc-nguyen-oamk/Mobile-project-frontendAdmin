@@ -1,21 +1,27 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, FlatList} from 'react-native';
-import apis from '../../api/apis';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Card from '../../components/Card';
+import {decode} from 'base-64';
+import React, {useEffect, useRef, useState} from 'react';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import apis from '../../api/apis';
+import Card from '../../components/Card';
 
-export default function Message({navigation}) {
-  const [customerList, setCustomerList] = useState([]);
+export default function Message({navigation, setNewMessageBadge}) {
+  const [customerList, _setCustomerList] = useState([]);
+  const customerListRef = useRef(customerList);
+
+  const setCustomerList = data => {
+    customerListRef.current = data;
+    _setCustomerList(data);
+  };
+
   let token;
-
-  // AsyncStorage.removeItem('messageLastSeenTimestamps')
+  let messageLastSeenTimestamps = [];
 
   AsyncStorage.getItem('messageLastSeenTimestamps', (err, result) => {
     if (err) {
       console.error(err);
     } else {
-      let messageLastSeenTimestamps;
       if (result == null) {
         messageLastSeenTimestamps = [];
       } else {
@@ -24,23 +30,88 @@ export default function Message({navigation}) {
     }
   });
 
+  const handleCustomerList = (token, newMessage) => {
+    const customer_id = newMessage.room;
+    const foundIndex = customerListRef.current.findIndex(
+      item => item.customer_id == customer_id,
+    );
+    const customerList = customerListRef.current;
+
+    let customerName;
+
+    async function setCustomerName() {
+      await apis.GetACustomer(token, customer_id).then(response => {
+        customerName = response.userList[0].customer_name;
+      });
+    }
+
+    setCustomerName();
+
+    if (foundIndex == -1) {
+      const newCustomer = {
+        customer_id: newMessage.room,
+        customer_name: customerName,
+        last_message: newMessage.message_text,
+        last_message_created_at: Date.now(),
+      };
+      customerList.push(newCustomer);
+    } else {
+      customerList[foundIndex].last_message = newMessage.message_text;
+      customerList[foundIndex].last_message_created_at = Date.now();
+    }
+
+    setCustomerList(customerList);
+  };
+
   useEffect(() => {
     async function fetchCustomerList() {
       token = await AsyncStorage.getItem('token');
       token = token.replace(/"/g, '');
       await apis.GetCustomerWithLastMessageList(token).then(response => {
-    
         setCustomerList(response);
       });
     }
 
     fetchCustomerList();
+
+    global.socket.on('notifications: admin new message', newMessage => {
+      handleCustomerList(token, newMessage);
+    });
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setNewMessageBadge(null);
+
+      AsyncStorage.getItem('token', (err, result) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        if (!result) {
+          alert('Please login first.');
+          return;
+        }
+
+        const token = result.replace(/"/g, '');
+        const admin = JSON.parse(decode(token.split('.')[1]));
+
+        if (!admin || !admin.admin_id) {
+          alert('Please login first.');
+          return;
+        }
+      });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View>
       <FlatList
         data={customerList}
+        // extraData={triggerFlatlistRerender}
         numColumns={1}
         renderItem={({item, index}) => (
           <TouchableOpacity
@@ -59,7 +130,8 @@ export default function Message({navigation}) {
               </View>
               <View style={styles.col2}>
                 <Text>
-                  {item.last_message} -{' '}
+                  {item.last_message}
+                  {'  -  '}
                   {new Date(item.last_message_created_at).toLocaleTimeString()}
                 </Text>
               </View>
@@ -102,6 +174,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bold: {
-    fontWeight: 'bold',
+    fontWeight: '700',
+  },
+  normal: {
+    fontWeight: '400',
   },
 });
