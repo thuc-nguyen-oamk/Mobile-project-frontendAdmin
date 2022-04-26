@@ -91,4 +91,23 @@ export default {
         return error.message;
         // alert(error.message);
       }),
+  GetACustomer: (TOKEN, customerId) =>
+    authorized({
+      method: 'GET',
+      url: `/customers/${customerId}`,
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    })
+      .then(function (response) {
+        // handle success
+
+        return response.data;
+      })
+      .catch(function (error) {
+        // handle error
+        return error.message;
+        // alert(error.message);
+      }),
 };

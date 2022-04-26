@@ -21,7 +21,6 @@ const SOCKETIO_PATH = "/eshopmb/socket.io/"
 var numeral = require('numeral');
 
 export default function AdminPage({navigation, setNewMessageBadge}) {
-  console.log("setNewMessageBadge:", setNewMessageBadge);
   const [adminInfo, setAdminInfo] = useState({});
   const [pannelInfor, setPannelInfor] = useState({});
   const [token, setToken] = useState('');
@@ -71,7 +70,6 @@ export default function AdminPage({navigation, setNewMessageBadge}) {
     fetchData();
 
     // connect to the socketio server
-    console.log('connect to the socketio server');
     global.socket = io(API_ADDRESS, {path: SOCKETIO_PATH});
 
     AsyncStorage.getItem('token', (err, result) => {
@@ -81,7 +79,6 @@ export default function AdminPage({navigation, setNewMessageBadge}) {
       }
       if (result) {
         const token = result.replace(/"/g, '');
-        console.log("token xxx:", token);
         global.socket.on('connect', () => {
           global.socket.emit('notifications: admin new message', {token});
         });
@@ -89,7 +86,6 @@ export default function AdminPage({navigation, setNewMessageBadge}) {
     });
 
     global.socket.on('notifications: admin new message', newMessage => {
-      console.log('newMessage', newMessage);
       setNewMessageBadge('!');
     });
   }, []);

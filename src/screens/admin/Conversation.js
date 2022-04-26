@@ -9,15 +9,15 @@ export default function Conversation({route, navigation}) {
   const [messageText, setMessageText] = useState('');
   const [messageList, setMessageList] = useState([]);
   const customerId = route.params.customer_id;
-  const [adminId, setAdminId] = useState('7252643');
+  const customerName = route.params.customer_name;
+  const [adminId, setAdminId] = useState('');
 
   const flatListRef = useRef(null);
 
   AsyncStorage.getItem('messageLastSeenTimestamps', (err, result) => {
     if (err) {
-      console.log(err);
+      console.error(err);
     } else {
-      console.log('messageLastSeenTimestamps from AS:', result);
       let messageLastSeenTimestamps;
 
       if (result == null) {
@@ -48,25 +48,19 @@ export default function Conversation({route, navigation}) {
     async function setupSocketIO() {
       let token = await AsyncStorage.getItem('token');
       token = token.replace(/"/g, '');
+
       if (!token) {
         alert('Unauthorized.');
         return;
       }
       const admin = JSON.parse(decode(token.split('.')[1]));
+
       if (!admin || !admin.admin_id) {
         alert('Unauthorized.');
         return;
       }
-      setAdminId(admin.admin_id);
-      console.log("global.socket:", global.socket.id);
-      // global.socket = io('https://api.uniproject.xyz/', {
-      //   path: '/eshopmb/socket.io/',
-      // });
-      // console.log("global.socket 2:", global.socket.id);
 
-      // global.socket.on('connect', () => {
-      //   global.socket.emit('admin join', {token, customer_id: customerId});
-      // });
+      setAdminId(admin.admin_id);
       global.socket.emit('chat: admin join', {token, customer_id: customerId});
 
       global.socket.on('chat: force disconnect', data => {
@@ -74,7 +68,6 @@ export default function Conversation({route, navigation}) {
       });
 
       global.socket.on('chat: join', data => {
-        console.log('data:', data);
         setMessageList(data.messageList);
       });
 
@@ -115,7 +108,7 @@ export default function Conversation({route, navigation}) {
     <>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Contact Store</Text>
+          <Text style={styles.title}>{customerName}'s Conversation</Text>
         </View>
         <FlatList
           ref={flatListRef}
