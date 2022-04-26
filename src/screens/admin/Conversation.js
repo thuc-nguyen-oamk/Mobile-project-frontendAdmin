@@ -47,14 +47,18 @@ export default function Conversation({route, navigation}) {
   useEffect(() => {
     async function setupSocketIO() {
       let token = await AsyncStorage.getItem('token');
+      // Forgot to call JSON.parse on AsyncStorage.getItem may lead to redundant double quotes
       token = token.replace(/"/g, '');
 
       if (!token) {
         alert('Unauthorized.');
         return;
       }
+
+      // Decode the token
       const admin = JSON.parse(decode(token.split('.')[1]));
 
+      // The token is in invalid format or it does not contain admin_id
       if (!admin || !admin.admin_id) {
         alert('Unauthorized.');
         return;

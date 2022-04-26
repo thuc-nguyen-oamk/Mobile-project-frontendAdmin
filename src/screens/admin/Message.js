@@ -8,8 +8,10 @@ import Card from '../../components/Card';
 
 export default function Message({navigation, setNewMessageBadge}) {
   const [customerList, _setCustomerList] = useState([]);
+  // Save the customerList so that it can be used in the FlatList
   const customerListRef = useRef(customerList);
 
+  // Save the customerList state's value to customerListRef also when setState
   const setCustomerList = data => {
     customerListRef.current = data;
     _setCustomerList(data);
@@ -40,6 +42,7 @@ export default function Message({navigation, setNewMessageBadge}) {
     let customerName;
 
     async function setCustomerName() {
+      // Get the customer name from the backend
       await apis.GetACustomer(token, customer_id).then(response => {
         customerName = response.userList[0].customer_name;
       });
@@ -47,6 +50,7 @@ export default function Message({navigation, setNewMessageBadge}) {
 
     setCustomerName();
 
+    // If the customer is not in the list, add it
     if (foundIndex == -1) {
       const newCustomer = {
         customer_id: newMessage.room,
@@ -56,6 +60,7 @@ export default function Message({navigation, setNewMessageBadge}) {
       };
       customerList.push(newCustomer);
     } else {
+      // If the customer is in the list, update the last message and last_message_created_at of it
       customerList[foundIndex].last_message = newMessage.message_text;
       customerList[foundIndex].last_message_created_at = Date.now();
     }
@@ -80,6 +85,7 @@ export default function Message({navigation, setNewMessageBadge}) {
   }, []);
 
   useEffect(() => {
+    // Register the listener for the onFocus event of the Message screen
     const unsubscribe = navigation.addListener('focus', () => {
       setNewMessageBadge(null);
 
@@ -89,11 +95,13 @@ export default function Message({navigation, setNewMessageBadge}) {
           return;
         }
 
+        // Token not found
         if (!result) {
           alert('Please login first.');
           return;
         }
 
+        // Forgot to call JSON.parse on AsyncStorage.getItem may lead to redundant double quotes
         const token = result.replace(/"/g, '');
         const admin = JSON.parse(decode(token.split('.')[1]));
 
@@ -104,6 +112,7 @@ export default function Message({navigation, setNewMessageBadge}) {
       });
     });
 
+    // Unregister the listener when the Message screen is unmounted
     return unsubscribe;
   }, [navigation]);
 
