@@ -19,7 +19,15 @@ import Product from './src/screens/admin/Product';
 import Notification from './src/screens/admin/Notification';
 import Order from './src/screens/admin/Order';
 import Message from './src/screens/admin/Message';
+import ProductDetail from './src/screens/admin/ProductDetail';
+import OrderDetail from './src/screens/admin/OrderDetail';
+import EditProduct from './src/screens/product/EditProduct';
+import EditChildProduct from './src/screens/product/EditChildProduct';
+import AddChildProduct from './src/screens/product/AddChildProduct';
+import AddProduct from './src/screens/product/AddProduct';
 import Conversation from './src/screens/admin/Conversation';
+import EditCategory from './src/screens/category/EditCategory';
+import AddCategory from './src/screens/category/AddCategory';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,8 +45,8 @@ function MyTabs({navigation}) {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Product') {
             iconName = focused ? 'list' : 'list-outline';
-          } else if (route.name === 'Notification') {
-            iconName = focused ? 'notifications' : 'notifications-outline';
+          } else if (route.name === 'Category') {
+            iconName = focused ? 'keypad' : 'keypad-outline';
           } else if (route.name === 'Order') {
             iconName = focused ? 'reader' : 'reader-outline';
           } else if (route.name === 'Message') {
@@ -56,7 +64,8 @@ function MyTabs({navigation}) {
         {(props) => <AdminPage {...props} setNewMessageBadge={setNewMessageBadge}/>}
       </Tab.Screen>
       <Tab.Screen name="Product" component={Product} />
-      <Tab.Screen name="Notification" component={Notification} />
+
+      <Tab.Screen name="Category" component={Notification} />
       <Tab.Screen name="Order" component={Order} />
       {/* <Tab.Screen name="Message" component={Message} /> */}
       <Tab.Screen name='Message' options={{ tabBarBadge: newMessageBadge }}>
@@ -76,6 +85,156 @@ function MyTabs({navigation}) {
               name="arrow-back-outline"
               size={24}
               onPress={() => navigation.navigate('Dashboard')}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ProductDetail"
+        component={ProductDetail}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Product Detail',
+          headerTitleAlign: 'center',
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Product')}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="OrderDetail"
+        component={OrderDetail}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Order Detail',
+          headerTitleAlign: 'center',
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Order')}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="EditProduct"
+        component={EditProduct}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Edit Child Product',
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#F9ABF9'},
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Product')}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="EditChildProduct"
+        component={EditChildProduct}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Edit Product',
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#F9ABF9'},
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Product')}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AddChildProduct"
+        component={AddChildProduct}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Add child Product',
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#F9ABF9'},
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Product')}
+            />
+          ),
+        }}
+      />
+       <Tab.Screen
+        name="AddProduct"
+        component={AddProduct}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Add Product',
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#F9ABF9'},
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Product')}
+            />
+          ),
+        }}
+      />
+         <Tab.Screen
+        name="EditCategory"
+        component={EditCategory}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Edit category',
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#F9ABF9'},
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Category')}
+            />
+          ),
+        }}
+      />
+        <Tab.Screen
+        name="AddCategory"
+        component={AddCategory}
+        options={{
+          tabBarVisibilityAnimationConfig: true,
+          tabBarButton: props => null,
+          headerShown: true,
+          title: 'Add new category',
+          headerTitleAlign: 'center',
+          headerStyle: {backgroundColor: '#F9ABF9'},
+          headerLeft: () => (
+            <Icon
+              name="arrow-back-outline"
+              size={24}
+              onPress={() => navigation.navigate('Category')}
             />
           ),
         }}

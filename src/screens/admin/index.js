@@ -23,6 +23,8 @@ var numeral = require('numeral');
 export default function AdminPage({navigation, setNewMessageBadge}) {
   const [adminInfo, setAdminInfo] = useState({});
   const [pannelInfor, setPannelInfor] = useState({});
+  const [productDataSet,setProductDataSet] = useState([]);
+  const [orderDataSet,setOrderDataSet] = useState([]);
   const [token, setToken] = useState('');
   const Logout = async () => {
     await AsyncStorage.removeItem('token');
@@ -32,40 +34,65 @@ export default function AdminPage({navigation, setNewMessageBadge}) {
   };
 
   const productTable = {
-    head: ['ID', 'Product', 'Category', 'Quantity sold'],
-    data: [
-      ['1', '232', '3', '4'],
-      ['1', '2', '3', '4'],
-      ['1', '2', '3', '4'],
-      ['1', '2', '3', '4'],
-    ],
+    head: ['ID', 'Product', 'Category', 'Sold'],
+    data: productDataSet,
     width: [50, 150, 150, 100],
   };
 
   const orderTable = {
-    head: ['ID', 'ID Customer', 'Address', 'Amount', 'Created at'],
-    data: [
-      ['1', '23sadsa2', '3', '4', '10'],
-      ['1', '2', '3', '4', '10'],
-      ['1', '2', '3', '4', '10'],
-      ['1', '2', '3', '4', '10'],
-    ],
+    head: ['ID', 'ID Customer', 'Address', 'Total', 'Created at'],
+    data:orderDataSet,
     width: [50, 100, 150, 100, 100],
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      const temp = await AsyncStorage.getItem('adminInfo');
-      let token_temp = await AsyncStorage.getItem('token');
-      token_temp = token_temp.replace(/"/g, '');
 
-      await apis.BasicInformation(token_temp).then(response => {
-        setPannelInfor(response);
-        console.log(response);
-      });
-      setToken(token_temp);
-      setAdminInfo(JSON.parse(temp));
-    }
+
+  useEffect(() => {
+      async function fetchData() {
+
+    const temp = await AsyncStorage.getItem('adminInfo');
+    var token_temp = await AsyncStorage.getItem('token');
+    token_temp = token_temp.replace(/"/g, '');
+     apis.BasicInformation(token_temp).then(response => {
+     
+      setPannelInfor(response);
+    
+      const list_temp = response['listOrder2']
+      
+   
+
+      const array_temp =[]
+      for( var i = 0 ;i < (list_temp.length > 5 ? 5 : list_temp.length) ; i++)
+      {
+        array_temp.push(Array(list_temp[i]['order_id'],
+        list_temp[i]['customer_id'],
+        list_temp[i]['order_address'],
+       numeral(list_temp[i]['order_total']).format('0,0') ,
+       (new Date(list_temp[i]['order_created_at'])).toLocaleString('YYYY-MM-dd'),
+        ))
+      }
+      
+      setOrderDataSet(array_temp)
+    });
+    apis.ProductList(token_temp).then(response => {
+      const list_temp = response
+      const array_temp =[]
+      for( var i = 0 ;i < (list_temp.length > 5 ? 5 : list_temp.length) ; i++)
+      {
+        array_temp.push(Array(list_temp[i]['product_id'],
+        list_temp[i]['product_name'],
+        list_temp[i]['category_name'],
+      10,
+        ))
+      }
+      
+     setProductDataSet(array_temp)
+      //setProductList(response)
+   
+    });
+    setToken(token_temp);
+    setAdminInfo(JSON.parse(temp));
+  }
 
     fetchData();
 
@@ -88,9 +115,17 @@ export default function AdminPage({navigation, setNewMessageBadge}) {
     global.socket.on('notifications: admin new message', newMessage => {
       setNewMessageBadge('!');
     });
+    
+    console.log('Category fetch');
+      navigation.addListener(
+        'focus',
+        payload => {
+          fetchData();
+        }
+    );
   }, []);
 
-  //console.log(productTable.head)
+  
   return (
     <SafeAreaView>
       <ScrollView>
